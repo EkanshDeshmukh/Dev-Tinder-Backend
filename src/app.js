@@ -59,15 +59,20 @@ app.post('/login', async (req, res) => {
     
 }})
 
-app.get('/profile',async(req, res) => {
+app.post('/profile',async(req, res) => {
  const cookies =req.cookies
  const {token} = cookies;
+ if(!token){
+  throw new Error("Invaild token")
+ }
  //validate the token
  const decodedMessage = await jwt.verify(token,"ekansh@123")
   const {_id} = decodedMessage;
-  console.log(_id);
-    
- res.send('reding cookies');
+const user = await User.findById(_id);
+if(!user){
+  throw new Error("user not exist")
+}
+res.send(user);    
  
 })
 app.get('/user', async (req, res) => {
