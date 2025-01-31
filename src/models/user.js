@@ -26,52 +26,52 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
-      validate(value) {
-        if (!validator.isStrongPassword(value)) {
-          throw new Error("Enter a Strong Password: " + value);
-        }
-      },
+     // required: true,
+      // validate(value) {
+      //   if (!validator.isStrongPassword(value)) {
+      //     throw new Error("Enter a Strong Password: " + value);
+      //   }
+    // },
     },
-    age: {
-      type: Number,
-      min: 18,
-    },
-    gender: {
-      type: String,
-      enum: {
-        values: ["male", "female", "other"],
-        message: `{VALUE} is not a valid gender type`,
-      },
-      validate(value) {
-        if (!["male", "female", "others"].includes(value)) {
-          throw new Error("Gender data is not valid");
-        }
-      },
-    },
-    isPremium: {
-      type: Boolean,
-      default: false,
-    },
-    membershipType: {
-      type: String,
-    },
-    photoUrl: {
-      type: String,
-      default: "https://geographyandyou.com/images/user-profile.png",
-      validate(value) {
-        if (!validator.isURL(value)) {
-          throw new Error("Invalid Photo URL: " + value);
-        }
-      },
-    },
-    about: {
-      type: String,
-      default: "This is a default about of the user!",
-    },
-    skills: {
-      type: [String],
-    },
+    // age: {
+    //   type: Number,
+    //   min: 18,
+    // },
+    // gender: {
+    //   type: String,
+    //   enum: {
+    //     values: ["male", "female", "other"],
+    //     message: `{VALUE} is not a valid gender type`,
+    //   },
+    //   validate(value) {
+    //     if (!["male", "female", "others"].includes(value)) {
+    //       throw new Error("Gender data is not valid");
+    //     }
+    //   },
+    // },
+    // isPremium: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    // membershipType: {
+    //   type: String,
+    // },
+    // photoUrl: {
+    //   type: String,
+    //   default: "https://geographyandyou.com/images/user-profile.png",
+    //   validate(value) {
+    //     if (!validator.isURL(value)) {
+    //       throw new Error("Invalid Photo URL: " + value);
+    //     }
+    //   },
+    // },
+    // about: {
+    //   type: String,
+    //   default: "This is a default about of the user!",
+    // },
+    // skills: {
+    //   type: [String],
+    // },
   },
   {
     timestamps: true,

@@ -4,8 +4,11 @@ const app = express();
 const User = require('./models/user');
 const { validateSignUpData } = require('./utilis/validation');
 const bcrypt = require('bcrypt');
-// Middleware to parse JSON requests
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+
 app.use(express.json());
+app.use(cookieParser());
 
 connectDB()
   .then(() => console.log('MongoDB connected...'))
@@ -37,12 +40,17 @@ app.post('/signup', async (req, res) => {
 app.post('/login', async (req, res) => {
   try {
     const { emailId, password } = req.body; 
-    const user = await User.findOne({ emailId });
-    console.log(user);
-    
+    const user = await User.findOne({ emailId });  
     if (!user) return res.status(400).json({ message: 'User not found' });
   
     const isMatch = await bcrypt.compare(password, user.password);
+    if(isMatch) {
+      //create a jwt
+      const token = await jwt.sign({_id:user._id},"ekansh@123");
+      console.log(token);
+       res.cookie('token',token);
+       res.send('login successfully')
+    }
     if (!isMatch) return res.status(400).json({ message: 'Incorrect password' });
     res.json({ message: 'Logged in successfully' });
     } catch (error) {
@@ -51,6 +59,17 @@ app.post('/login', async (req, res) => {
     
 }})
 
+app.get('/profile',async(req, res) => {
+ const cookies =req.cookies
+ const {token} = cookies;
+ //validate the token
+ const decodedMessage = await jwt.verify(token,"ekansh@123")
+  const {_id} = decodedMessage;
+  console.log(_id);
+    
+ res.send('reding cookies');
+ 
+})
 app.get('/user', async (req, res) => {
   const userEmail = req.body.email;
 
