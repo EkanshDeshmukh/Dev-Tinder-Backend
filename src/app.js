@@ -6,6 +6,7 @@ const { validateSignUpData } = require('./utilis/validation');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
+const userAuth = require('./middlewares/auth');
 
 app.use(express.json());
 app.use(cookieParser());
@@ -59,16 +60,8 @@ app.post('/login', async (req, res) => {
     
 }})
 
-app.post('/profile',async(req, res) => {
- const cookies =req.cookies
- const {token} = cookies;
- if(!token){
-  throw new Error("Invaild token")
- }
- //validate the token
- const decodedMessage = await jwt.verify(token,"ekansh@123")
-  const {_id} = decodedMessage;
-const user = await User.findById(_id);
+app.post('/profile', userAuth,async(req, res) => {
+const user = req.user;
 if(!user){
   throw new Error("user not exist")
 }
