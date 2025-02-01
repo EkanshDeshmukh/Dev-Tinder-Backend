@@ -44,15 +44,18 @@ app.post('/login', async (req, res) => {
     const user = await User.findOne({ emailId });  
     if (!user) return res.status(400).json({ message: 'User not found' });
   
-    const isMatch = await bcrypt.compare(password, user.password);
-    if(isMatch) {
+     const isPasswordValid = await user.validatePassword();
+    if(isPasswordValid) {
       //create a jwt
-      const token = await jwt.sign({_id:user._id},"ekansh@123");
-      console.log(token);
-       res.cookie('token',token);
+      const token = await user.getJWT();
+      res.cookie('token',token, {
+        expires: new Date(Date.now() +8 * 3600000), 
+        httpOnly: true, // only accessible via HTTP requests
+        secure: false, // true for HTTPS
+      });
        res.send('login successfully')
     }
-    if (!isMatch) return res.status(400).json({ message: 'Incorrect password' });
+    if (!isPasswordValid) return res.status(400).json({ message: 'Incorrect password' });
     res.json({ message: 'Logged in successfully' });
     } catch (error) {
     console.error('Error logging in:', error.message);
